@@ -2,10 +2,10 @@ name: 99 - Create Issues for team01
 
 env:
   ASN_NAME: team01
-  ASN_LINK: https://ucsb-cs156.github.io/f25/lab/team01.html
-  SAMPLE_TEAM: f25-17
-  STARTER_REPO_RELATIVE_LINK: /ucsb-cs156-f25/STARTER-team01/
-  STARTER_REPO_FULL_LINK: https://github.com/ucsb-cs156-f25/STARTER-team01
+  ASN_LINK: https://ucsb-cs156.github.io/s26/lab/team01.html
+  SAMPLE_TEAM: s26-17
+  STARTER_REPO_RELATIVE_LINK: /ucsb-cs156-s26/STARTER-team01/
+  STARTER_REPO_FULL_LINK: https://github.com/ucsb-cs156-s26/STARTER-team01
   GH_TOKEN: ${{ github.token }}
   LABEL_COLOR: "{ \"UCSBDiningCommonsMenuItem\": \"ff0000\", \"UCSBOrganization\": \"00ff00\", \"RecommendationRequest\": \"0000ff\", \"MenuItemReview\": \"ff00ff\", \"HelpRequest\": \"ffff00\", \"Articles\": \"00ffff\" }"
 
