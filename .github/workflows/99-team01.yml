@@ -244,9 +244,7 @@ jobs:
             deployment.
             
             # Acceptance Criteria:
-            # Acceptance Criteria:
             - [ ] In general, the steps in <https://ucsb-cs156.github.io/topics/dokku/deploying_an_app.html> have been followed.
-            - [ ] An app named <tt>${{env.ASN_NAME}}-dev-yourGithubid</tt> is created on this team's dokku server.
             - [ ] You have run <tt>dokku git:set ${{env.ASN_NAME}}-dev-yourGithubid keep-git-dir true</tt>
             - [ ] The ADMIN_EMAILS are configured for that app.
                   * You should find the ones you need in a pinned post on your team's Slack channel.
