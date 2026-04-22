@@ -209,7 +209,7 @@ jobs:
               data = json.load(f)
           debug = True
 
-          if debug:
+          if False:
               print(f"Project Data JSON: {json.dumps(data, indent=2)}")
           issue_counts = {}
           columns = [c.strip() for c in os.environ.get('columns', '').split(',')]
