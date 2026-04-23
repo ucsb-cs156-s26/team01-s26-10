@@ -376,7 +376,7 @@ jobs:
             Returns:
             - dict: A dictionary mapping channel names to their corresponding channel IDs.
             """
-            
+
             client = WebClient(token=token)
             channels = {}
             try:
@@ -392,6 +392,7 @@ jobs:
 
           def get_team_to_channel_id(prefix, token):
             channels = lookupChannels(prefix, token)
+            print(f"Channels found with prefix '{prefix}': {channels}")
             return {channel['name']: channel['id'] for channel in channels}
           
           qxx = os.getenv("qxx")
