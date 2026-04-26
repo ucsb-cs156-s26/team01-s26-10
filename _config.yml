@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156-s26/team01-s26-10
 owner: ucsb-cs156-s26
 repo_name: team01-s26-10
-pull_requests: [{"author":{"id":"U_kgDOCxyfpw","is_bot":false,"login":"AmitKarthikeyan","name":"Amit Karthikeyan"},"headRefName":"AK_38","number":44,"title":"Ak 38","url":"https://github.com/ucsb-cs156-s26/team01-s26-10/pull/44"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjcyMTcxNTQ2","is_bot":false,"login":"Kazu-Pang","name":"Kazu Pang"},"headRefName":"KP-26","number":45,"title":"Add database table for MenuItemReviews","url":"https://github.com/ucsb-cs156-s26/team01-s26-10/pull/45"},{"author":{"id":"U_kgDOCxyfpw","is_bot":false,"login":"AmitKarthikeyan","name":"Amit Karthikeyan"},"headRefName":"AK_38","number":44,"title":"Amit - Create database table for Articles","url":"https://github.com/ucsb-cs156-s26/team01-s26-10/pull/44"}]
