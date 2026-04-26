@@ -35,19 +35,31 @@
                   },
                   {
                     "column": {
-                      "name": "DINING_COMMONS_CODE",
+                      "name": "ITEM_ID",
+                      "type": "BIGINT"
+                    }
+                  },
+                  {
+                    "column": {
+                      "name": "REVIEWER_EMAIL",
                       "type": "VARCHAR(255)"
                     }
                   },
                   {
                     "column": {
-                      "name": "NAME",
-                      "type": "VARCHAR(255)"
+                      "name": "STARS",
+                      "type": "INT"
                     }
                   },
                   {
                     "column": {
-                      "name": "STATION",
+                      "name": "LOCAL_DATE_TIME",
+                      "type": "TIMESTAMP"
+                    }
+                  },
+                  {
+                    "column": {
+                      "name": "COMMENTS",
                       "type": "VARCHAR(255)"
                     }
                   }

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,11 +16,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity(name = "menuitemreviews")
 public class MenuItemReview {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    private String diningCommonsCode;
-    private String name;
-    private String station;
+  private long itemId;
+  private String reviewerEmail;
+  private int stars;
+  private LocalDateTime dateReviewed;
+  private String comments;
 }
