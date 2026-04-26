@@ -2,7 +2,7 @@
     "databaseChangeLog": [
       {
         "changeSet": {
-          "id": "MenuItemReviews-1",
+          "id": "MenuItemReviews-2",
           "author": "Kazu-Pang",
           "preConditions": [
             {
@@ -53,7 +53,7 @@
                   },
                   {
                     "column": {
-                      "name": "LOCAL_DATE_TIME",
+                      "name": "DATE_REVIEWED",
                       "type": "TIMESTAMP"
                     }
                   },
