@@ -2,7 +2,7 @@
     "databaseChangeLog": [
       {
         "changeSet": {
-          "id": "MenuItemReviews-2",
+          "id": "MenuItemReviews-1",
           "author": "Kazu-Pang",
           "preConditions": [
             {
