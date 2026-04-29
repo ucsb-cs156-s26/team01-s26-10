@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156-s26/team01-s26-10
 owner: ucsb-cs156-s26
 repo_name: team01-s26-10
-pull_requests: [{"author":{"id":"MDQ6VXNlcjc5ODcxOTQ2","is_bot":false,"login":"EpicSRN021","name":""},"headRefName":"sn-20","number":47,"title":"Add RecommendationRequest table entity and migration","url":"https://github.com/ucsb-cs156-s26/team01-s26-10/pull/47"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjcyMTcxNTQ2","is_bot":false,"login":"Kazu-Pang","name":"Kazu Pang"},"headRefName":"KP-27","number":48,"title":"Add Post, Get, and tests for MenuItemReview ","url":"https://github.com/ucsb-cs156-s26/team01-s26-10/pull/48"},{"author":{"id":"MDQ6VXNlcjc5ODcxOTQ2","is_bot":false,"login":"EpicSRN021","name":""},"headRefName":"sn-20","number":47,"title":"Add RecommendationRequest table entity and migration","url":"https://github.com/ucsb-cs156-s26/team01-s26-10/pull/47"}]
