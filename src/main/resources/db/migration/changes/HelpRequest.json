@@ -2,8 +2,8 @@
     "databaseChangeLog": [
       {
         "changeSet": {
-          "id": "UCSBDates-1",
-          "author": "YourGitHubID",
+          "id": "HelpRequest-1",
+          "author": "yuhangj554",
           "preConditions": [
             {
               "onFail": "MARK_RAN"
@@ -12,7 +12,7 @@
               "not": [
                 {
                   "tableExists": {
-                    "tableName": "UCSBDATES"
+                    "tableName": "HELPREQUEST"
                   }
                 }
               ]
@@ -27,7 +27,7 @@
                       "autoIncrement": true,
                       "constraints": {
                         "primaryKey": true,
-                        "primaryKeyName": "UCSBDATES_PK"
+                        "primaryKeyName": "HELPREQUEST_PK"
                       },
                       "name": "ID",
                       "type": "BIGINT"
@@ -35,24 +35,42 @@
                   },
                   {
                     "column": {
-                      "name": "LOCAL_DATE_TIME",
+                      "name": "REQUESTER_ID",
+                      "type": "VARCHAR(255)"
+                    }
+                  },
+                  {
+                    "column": {
+                      "name": "TEAM_ID",
+                      "type": "VARCHAR(255)"
+                    }
+                  },
+                  {
+                    "column": {
+                      "name": "TABLE_OR_BREAKOUT_ROOM",
+                      "type": "VARCHAR(255)"
+                    }
+                  },
+                  {
+                    "column": {
+                      "name": "REQUEST_TIME",
                       "type": "TIMESTAMP"
                     }
                   },
                   {
                     "column": {
-                      "name": "NAME",
+                      "name": "EXPLANATION",
                       "type": "VARCHAR(255)"
                     }
                   },
                   {
                     "column": {
-                      "name": "QUARTERYYYYQ",
-                      "type": "VARCHAR(255)"
+                      "name": "SOLVED",
+                      "type": "BOOLEAN"
                     }
                   }
                 ],
-                "tableName": "UCSBDATES"
+                "tableName": "HELPREQUEST"
               }
             }
           ]
