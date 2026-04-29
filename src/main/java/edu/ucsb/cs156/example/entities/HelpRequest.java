@@ -18,13 +18,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "ucsbdates")
+@Entity(name = "helprequest")
 public class UCSBDate {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  private String quarterYYYYQ;
-  private String name;
-  private LocalDateTime localDateTime;
+  private String requesterEmail;
+  private String teamId;
+  private String tableOrBreakoutRoom;
+  private LocalDateTime requestTime;
+  private String explanation;
+  private boolean solved;
 }
