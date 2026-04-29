@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -117,7 +118,16 @@ public class ArticlesControllerTests extends ControllerTestCase {
             .andReturn();
 
     // assert
-    verify(articleRepository, times(1)).save(any());
+    ArgumentCaptor<Article> articleCaptor = ArgumentCaptor.forClass(Article.class);
+    verify(articleRepository, times(1)).save(articleCaptor.capture());
+
+    Article savedArticle = articleCaptor.getValue();
+    assertEquals("Test Article 1", savedArticle.getTitle());
+    assertEquals("https://example.com/article1", savedArticle.getUrl());
+    assertEquals("This is the first test article.", savedArticle.getExplanation());
+    assertEquals("email", savedArticle.getEmail());
+    assertEquals(LocalDateTime.parse("2022-04-20T00:00:00"), savedArticle.getDateAdded());
+
     String expectedJson = mapper.writeValueAsString(article1);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
