@@ -1,8 +1,8 @@
 package edu.ucsb.cs156.example.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import edu.ucsb.cs156.example.entities.UCSBDate;
-import edu.ucsb.cs156.example.repositories.UCSBDateRepository;
+import edu.ucsb.cs156.example.entities.HelpRequest;
+import edu.ucsb.cs156.example.repositories.HelpRequestRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,63 +17,68 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/** This is a REST controller for UCSBDates */
-@Tag(name = "UCSBDates")
-@RequestMapping("/api/ucsbdates")
+@Tag(name = "HelpRequest")
+@RequestMapping("/api/helprequest")
 @RestController
 @Slf4j
-public class UCSBDatesController extends ApiController {
+public class HelpRequestController extends ApiController {
 
-  @Autowired UCSBDateRepository ucsbDateRepository;
+  @Autowired HelpRequestRepository helpRequestRepository;
 
   /**
-   * List all UCSB dates
+   * List all help requests
    *
-   * @return an iterable of UCSBDate
+   * @return an iterable of HelpRequest
    */
-  @Operation(summary = "List all ucsb dates")
+  @Operation(summary = "List all help requests")
   @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping("/all")
-  public Iterable<UCSBDate> allUCSBDates() {
-    Iterable<UCSBDate> dates = ucsbDateRepository.findAll();
-    return dates;
+  public Iterable<HelpRequest> allHelpRequests() {
+    Iterable<HelpRequest> requests = helpRequestRepository.findAll();
+    return requests;
   }
 
   /**
-   * Create a new date
+   * Create a new Help Request
    *
-   * @param quarterYYYYQ the quarter in the format YYYYQ
-   * @param name the name of the date
-   * @param localDateTime the date
-   * @return the saved ucsbdate
+   * @param requesterEmail the email of the requester
+   * @param teamId the id of the team
+   * @param tableOrBreakoutRoom the table or breakout room
+   * @param requestTime the time the request was made
+   * @param explanation explanation of the issue
+   * @param solved true if the issue is solved, false otherwise
+   * @return the saved help request
    */
-  @Operation(summary = "Create a new date")
+  @Operation(summary = "Create a new help request")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/post")
-  public UCSBDate postUCSBDate(
-      @Parameter(name = "quarterYYYYQ") @RequestParam String quarterYYYYQ,
-      @Parameter(name = "name") @RequestParam String name,
+  public HelpRequest postHelpRequest(
+      @Parameter(name = "requesterEmail") @RequestParam String requesterEmail,
+      @Parameter(name = "teamId") @RequestParam String teamId,
+      @Parameter(name = "tableOrBreakoutRoom") @RequestParam String tableOrBreakoutRoom,
       @Parameter(
-              name = "localDateTime",
+              name = "requestTime",
               description =
                   "date (in iso format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601)")
-          @RequestParam("localDateTime")
+          @RequestParam("requestTime")
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-          LocalDateTime localDateTime)
+          LocalDateTime requestTime,
+      @Parameter(name = "explanation") @RequestParam String explanation,
+      @Parameter(name = "solved") @RequestParam boolean solved)
       throws JsonProcessingException {
 
-    // For an explanation of @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    // See: https://www.baeldung.com/spring-date-parameters
+    log.info("requestTime={}", requestTime);
 
-    log.info("localDateTime={}", localDateTime);
+    HelpRequest helpRequest = new HelpRequest();
+    helpRequest.setRequesterEmail(requesterEmail);
+    helpRequest.setTeamId(teamId);
+    helpRequest.setTableOrBreakoutRoom(tableOrBreakoutRoom);
+    helpRequest.setRequestTime(requestTime);
+    helpRequest.setExplanation(explanation);
+    helpRequest.setSolved(solved);
 
-    UCSBDate ucsbDate = new UCSBDate();
-    ucsbDate.setQuarterYYYYQ(quarterYYYYQ);
-    ucsbDate.setName(name);
-    ucsbDate.setLocalDateTime(localDateTime);
+    HelpRequest savedHelpRequest = helpRequestRepository.save(helpRequest);
 
-    UCSBDate savedUcsbDate = ucsbDateRepository.save(ucsbDate);
-
-    return savedUcsbDate;
+    return savedHelpRequest;
   }
 }
