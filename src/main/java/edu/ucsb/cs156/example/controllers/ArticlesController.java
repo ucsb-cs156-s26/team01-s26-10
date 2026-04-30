@@ -9,14 +9,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/articles")
 @RestController
 @Slf4j
-public class ArticlesController {
+public class ArticlesController extends ApiController {
   @Autowired ArticleRepository articleRepository;
 
   @Operation(summary = "Get all records in the table and return as a JSON array")
@@ -89,12 +86,6 @@ public class ArticlesController {
     return article;
   }
 
-  @ExceptionHandler(EntityNotFoundException.class)
-  public ResponseEntity<Map<String, Object>> handleEntityNotFound(EntityNotFoundException e) {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-        .body(Map.of("type", "EntityNotFoundException", "message", e.getMessage()));
-  }
-
   @Operation(summary = "Update a single record")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PutMapping("")
@@ -115,5 +106,18 @@ public class ArticlesController {
     Article savedArticle = articleRepository.save(article);
 
     return savedArticle;
+  }
+
+  @Operation(summary = "Delete an Article")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @DeleteMapping("")
+  public Object deleteArticle(@Parameter(name = "id") @RequestParam Long id) {
+    Article article =
+        articleRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(Article.class, id));
+
+    articleRepository.delete(article);
+    return genericMessage("Article with id %s deleted".formatted(id));
   }
 }
