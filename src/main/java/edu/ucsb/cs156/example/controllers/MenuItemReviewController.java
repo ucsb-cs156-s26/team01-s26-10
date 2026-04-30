@@ -2,7 +2,6 @@ package edu.ucsb.cs156.example.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.ucsb.cs156.example.entities.MenuItemReview;
-import edu.ucsb.cs156.example.entities.UCSBDate;
 import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import edu.ucsb.cs156.example.repositories.MenuItemReviewRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -113,7 +112,7 @@ public class MenuItemReviewController extends ApiController {
     MenuItemReview menuItemReview =
         menuItemReviewRepository
             .findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(UCSBDate.class, id));
+            .orElseThrow(() -> new EntityNotFoundException(MenuItemReview.class, id));
 
     menuItemReviewRepository.delete(menuItemReview);
     return genericMessage("MenuItemReview with id %s deleted".formatted(id));
