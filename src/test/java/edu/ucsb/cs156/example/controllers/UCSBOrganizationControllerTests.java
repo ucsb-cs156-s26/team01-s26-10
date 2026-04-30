@@ -16,6 +16,8 @@ import edu.ucsb.cs156.example.repositories.UserRepository;
 import edu.ucsb.cs156.example.testconfig.TestConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -31,7 +33,7 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
 
   @MockitoBean UserRepository userRepository;
 
-  // Authorization tests for /api/ucsborganization/all
+  // Tests for GET /api/ucsborganization/all
 
   @Test
   public void logged_out_users_cannot_get_all() throws Exception {
@@ -43,37 +45,6 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
   public void logged_in_users_can_get_all() throws Exception {
     mockMvc.perform(get("/api/ucsborganization/all")).andExpect(status().is(200));
   }
-
-  // Authorization tests for /api/ucsborganization/post
-
-  @Test
-  public void logged_out_users_cannot_post() throws Exception {
-    mockMvc
-        .perform(
-            post("/api/ucsborganization/post")
-                .param("orgCode", "ZPR")
-                .param("orgTranslationShort", "ZETA PHI RHO")
-                .param("orgTranslation", "ZETA PHI RHO")
-                .param("inactive", "false")
-                .with(csrf()))
-        .andExpect(status().is(403));
-  }
-
-  @WithMockUser(roles = {"USER"})
-  @Test
-  public void logged_in_regular_users_cannot_post() throws Exception {
-    mockMvc
-        .perform(
-            post("/api/ucsborganization/post")
-                .param("orgCode", "ZPR")
-                .param("orgTranslationShort", "ZETA PHI RHO")
-                .param("orgTranslation", "ZETA PHI RHO")
-                .param("inactive", "false")
-                .with(csrf()))
-        .andExpect(status().is(403));
-  }
-
-  // Tests with mocks for database actions
 
   @WithMockUser(roles = {"USER"})
   @Test
@@ -110,6 +81,35 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
     String expectedJson = mapper.writeValueAsString(expectedOrgs);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
+  }
+
+  // Tests for POST /api/ucsborganization/post
+
+  @Test
+  public void logged_out_users_cannot_post() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/ucsborganization/post")
+                .param("orgCode", "ZPR")
+                .param("orgTranslationShort", "ZETA PHI RHO")
+                .param("orgTranslation", "ZETA PHI RHO")
+                .param("inactive", "false")
+                .with(csrf()))
+        .andExpect(status().is(403));
+  }
+
+  @WithMockUser(roles = {"USER"})
+  @Test
+  public void logged_in_regular_users_cannot_post() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/ucsborganization/post")
+                .param("orgCode", "ZPR")
+                .param("orgTranslationShort", "ZETA PHI RHO")
+                .param("orgTranslation", "ZETA PHI RHO")
+                .param("inactive", "false")
+                .with(csrf()))
+        .andExpect(status().is(403));
   }
 
   @WithMockUser(roles = {"ADMIN", "USER"})
@@ -180,5 +180,62 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
     String expectedJson = mapper.writeValueAsString(org1);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
+  }
+
+  // Tests for GET /api/ucsborganization?orgCode=...
+
+  @Test
+  public void logged_out_users_cannot_get_by_id() throws Exception {
+    mockMvc
+        .perform(get("/api/ucsborganization").param("orgCode", "ZPR"))
+        .andExpect(status().is(403));
+  }
+
+  @WithMockUser(roles = {"USER"})
+  @Test
+  public void logged_in_user_can_get_by_id_when_the_id_exists() throws Exception {
+    // arrange
+    UCSBOrganization org =
+        UCSBOrganization.builder()
+            .orgCode("ZPR")
+            .orgTranslationShort("ZETA PHI RHO")
+            .orgTranslation("ZETA PHI RHO")
+            .inactive(false)
+            .build();
+
+    when(ucsbOrganizationRepository.findById(eq("ZPR"))).thenReturn(Optional.of(org));
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/ucsborganization").param("orgCode", "ZPR"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    verify(ucsbOrganizationRepository, times(1)).findById(eq("ZPR"));
+    String expectedJson = mapper.writeValueAsString(org);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"USER"})
+  @Test
+  public void logged_in_user_can_get_by_id_when_the_id_does_not_exist() throws Exception {
+    // arrange
+    when(ucsbOrganizationRepository.findById(eq("NONEXISTENT"))).thenReturn(Optional.empty());
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/ucsborganization").param("orgCode", "NONEXISTENT"))
+            .andExpect(status().isNotFound())
+            .andReturn();
+
+    // assert
+    verify(ucsbOrganizationRepository, times(1)).findById(eq("NONEXISTENT"));
+    Map<String, Object> json = responseToJson(response);
+    assertEquals("EntityNotFoundException", json.get("type"));
+    assertEquals("UCSBOrganization with id NONEXISTENT not found", json.get("message"));
   }
 }
