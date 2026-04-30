@@ -136,7 +136,7 @@ public class HelpRequestControllerTests extends ControllerTestCase {
             .tableOrBreakoutRoom("7")
             .requestTime(ldt1)
             .explanation("Need help with Swagger-ui")
-            .solved(false)
+            .solved(true)
             .build();
 
     when(helpRequestRepository.save(eq(helpRequest1))).thenReturn(helpRequest1);
@@ -151,7 +151,7 @@ public class HelpRequestControllerTests extends ControllerTestCase {
                     .param("tableOrBreakoutRoom", "7")
                     .param("requestTime", "2022-04-20T17:35:00")
                     .param("explanation", "Need help with Swagger-ui")
-                    .param("solved", "false")
+                    .param("solved", "true")
                     .with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
