@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MvcResult;
@@ -222,5 +223,98 @@ public class ArticlesControllerTests extends ControllerTestCase {
     Map<String, Object> json = responseToJson(response);
     assertEquals("EntityNotFoundException", json.get("type"));
     assertEquals("Article with id 7 not found", json.get("message"));
+  }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void admin_can_edit_an_existing_article() throws Exception {
+    // arrange
+
+    Article articleOrig =
+        Article.builder()
+            .title("Test Article 1")
+            .url("https://example.com/article1")
+            .explanation("This is the first test article.")
+            .email("email")
+            .dateAdded(LocalDateTime.parse("2022-04-20T00:00:00"))
+            .build();
+
+    Article articleEdited =
+        Article.builder()
+            .title("Updated Article")
+            .url("https://example.com/updated")
+            .explanation("Updated explanation.")
+            .email("updated@email.com")
+            .dateAdded(LocalDateTime.parse("2023-04-20T00:00:00"))
+            .build();
+
+    String requestBody = mapper.writeValueAsString(articleEdited);
+
+    when(articleRepository.findById(eq(67L))).thenReturn(Optional.of(articleOrig));
+    when(articleRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/articles")
+                    .param("id", "67")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    ArgumentCaptor<Article> articleCaptor = ArgumentCaptor.forClass(Article.class);
+    verify(articleRepository, times(1)).save(articleCaptor.capture());
+
+    Article savedArticle = articleCaptor.getValue();
+    assertEquals("Updated Article", savedArticle.getTitle());
+    assertEquals("https://example.com/updated", savedArticle.getUrl());
+    assertEquals("Updated explanation.", savedArticle.getExplanation());
+    assertEquals("updated@email.com", savedArticle.getEmail());
+    assertEquals(LocalDateTime.parse("2023-04-20T00:00:00"), savedArticle.getDateAdded());
+    String responseString = response.getResponse().getContentAsString();
+    String expectedJson = mapper.writeValueAsString(savedArticle);
+    assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void admin_cannot_edit_article_that_does_not_exist() throws Exception {
+    // arrange
+
+    Article articleDate =
+        Article.builder()
+            .title("Test Article 1")
+            .url("https://example.com/article1")
+            .explanation("This is the first test article.")
+            .email("email")
+            .dateAdded(LocalDateTime.parse("2022-04-20T00:00:00"))
+            .build();
+
+    String requestBody = mapper.writeValueAsString(articleDate);
+
+    when(articleRepository.findById(eq(67L))).thenReturn(Optional.empty());
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/articles")
+                    .param("id", "67")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+
+    // assert
+    verify(articleRepository, times(1)).findById(67L);
+    Map<String, Object> json = responseToJson(response);
+    assertEquals("Article with id 67 not found", json.get("message"));
   }
 }
